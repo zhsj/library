@@ -1,0 +1,66 @@
+{% extends "layout.html" %}
+{% block container %}
+<script src="static/list.js"></script>
+<script>
+$(document).ready(function(){
+    var options = {
+        valueNames: [ 'id', 'isbn', 'all', 'left', 'book_name', 'book_author', 'book_price', 'comment' ]
+    };
+    var bookList = new List('books', options);
+    $('#stockout').change(function(){
+        if(this.checked) {
+            bookList.filter(function(item) {
+                if(item.values().left > 0) {
+                    return true;
+                } else {
+                    return false;
+                }
+            });
+        } else {
+            bookList.filter();
+        }
+    });
+});
+</script>
+<div id="books">
+    <form class="form-inline">
+        <div class="form-group">
+            <label></label>
+            <input class="form-control search" placeholder="Search">
+        </div>
+        <div class="checkbox">
+            <label>
+                <input type="checkbox" id="stockout"> Hide stockout
+            </label>
+        </div>
+    </form>
+    <table class="table">
+        <thead>
+            <tr>
+                <th>#</th>
+                <th>ISBN</th>
+                <th>All</th>
+                <th>Left</th>
+                <th>Book Name</th>
+                <th>Book Author</th>
+                <th>Book Price</th>
+                <th>Comment</th>
+            </tr>
+        </thead>
+        <tbody class="list">
+        {%- for book in books %}
+        <tr>
+            <td class="id"><a href="{{ url_for('edit', id=book.id) }}">{{ book.id }}</a></td>
+            <td class="isbn"><a href="http://book.douban.com/isbn/{{ book.isbn}}">{{ book.isbn }}</a></td>
+            <td class="all">{{ book.all }}</td>
+            <td class="left">{{ book.left }}</td>
+            <td class="book_name">{{ book.book_name }}</td>
+            <td class="book_author">{{ book.book_author }}</td>
+            <td class="book_price">{{ book.book_price }}</td>
+            <td class="comment">{{ book.comment }}</td>
+        </tr>
+        {%- endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}

@@ -1,0 +1,30 @@
+{% extends "layout.html" %}
+{%block container %}
+<form method="post">
+    <div class="form-group">
+        <label for="isbn">ISBN</label>
+        <input type="text" class="form-control" id="isbn" name="isbn" value="{{ request.form.isbn }}">
+    </div>
+    <div class="form-group">
+        <label for="all">Counts</label>
+        <input type="text" class="form-control" id="all" name="all" value="{{ request.form.all }}">
+    </div>
+    <div class="form-group">
+        <label for="book_name">Book Name</label>
+        <input type="text" class="form-control" id="book_name" name="book_name" value="{{ request.form.book_name }}">
+    </div>
+    <div class="form-group">
+        <label for="book_author">Book Author</label>
+        <input type="text" class="form-control" id="book_author" name="book_author" value="{{ request.form.book_author }}">
+    </div>
+    <div class="form-group">
+        <label for="book_price">Book Price</label>
+        <input type="text" class="form-control" id="book_price" name="book_price" value="{{ request.form.book_price }}">
+    </div>
+    <div class="form-group">
+        <label for="comment">Comment</label>
+        <input type="text" class="form-control" id="commnet" name="comment" value="{{ request.form.comment }}">
+    </div>
+    <button type="submit" class="btn btn-default">Submit</button>
+</form>
+{% endblock %}
