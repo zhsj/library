@@ -72,7 +72,7 @@ def index():
     return render_template('index.html',
         books = Book.query.all())
 
-@app.route('/new', methods=['GET', 'POST'])
+@app.route('/manage/new', methods=['GET', 'POST'])
 def new():
     if request.method == 'POST':
         if not request.form['isbn']:
@@ -81,9 +81,10 @@ def new():
                      request.form['book_author'], request.form['book_price'], request.form['comment'])
         db.session.add(book)
         db.session.commit()
+        return redirect(url_for('index'))
     return render_template('new.html')
 
-@app.route('/import', methods=['GET', 'POST'])
+@app.route('/manage/import', methods=['GET', 'POST'])
 def import_book():
     if request.method == 'POST':
         if not request.form['isbn']:
@@ -91,19 +92,21 @@ def import_book():
         book_handle = BookHandle()
         for isbn in request.form['isbn'].split():
             book_handle.add(isbn)
+        return redirect(url_for('index'))
     return render_template('import.html')
 
-@app.route('/edit/<int:id>', methods=['GET', 'POST'])
+@app.route('/manage/edit/<int:id>', methods=['GET', 'POST'])
 def edit(id):
     if request.method == 'POST':
         if not request.form['isbn']:
             flash('ISBN is required', 'error')
         book_handle = BookHandle()
         book_handle.update(id, request.form)
+        return redirect(url_for('index'))
     book = Book.query.filter_by(id=id).first()
     return render_template('edit.html', book=book)
 
-@app.route('/del/<int:id>', methods=['GET', 'POST'])
+@app.route('/manage/del/<int:id>', methods=['GET', 'POST'])
 def delete(id):
     book_handle = BookHandle()
     book_handle.delete(id)
