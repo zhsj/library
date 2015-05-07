@@ -17,4 +17,4 @@ RUN pip3 install gunicorn -r /library/requirements.txt
 
 EXPOSE 8000
 
-CMD ['gunicorn', 'library.library:app']
+CMD ["gunicorn", "-b 0.0.0.0:8000", "library.library:app"]
