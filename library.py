@@ -1,6 +1,7 @@
 from flask import Flask, render_template, flash, request, redirect, \
-    url_for
+    url_for, Response
 from flask_sqlalchemy import SQLAlchemy
+from functools import wraps
 import requests
 import json
 
@@ -8,6 +9,25 @@ app = Flask(__name__)
 app.config.from_pyfile("library.cfg")
 app.config.from_pyfile("library.cfg.user", silent=True)
 db = SQLAlchemy(app)
+
+def check_auth(username, password):
+    return username == app.config.get('BASIC_AUTH_USER', 'admin') and \
+            password == app.config.get('BASIC_AUTH_PASSWD', 'admin')
+
+def authenticate():
+    return Response(
+        'Could not verify your access level for that URL.\n'
+        'You have to login with proper credentials', 401,
+        {'WWW-Authenticate': 'Basic realm="Login Required"'})
+
+def requires_auth(f):
+    @wraps(f)
+    def decorated(*args, **kwargs):
+        auth = request.authorization
+        if not auth or not check_auth(auth.username, auth.password):
+            return authenticate()
+        return f(*args, **kwargs)
+    return decorated
 
 class Book(db.Model):
     __tablename__ = "books"
@@ -74,6 +94,7 @@ def index():
         books = Book.query.all())
 
 @app.route('/manage/new', methods=['GET', 'POST'])
+@requires_auth
 def new():
     if request.method == 'POST':
         if not request.form['isbn']:
@@ -86,6 +107,7 @@ def new():
     return render_template('new.html')
 
 @app.route('/manage/import', methods=['GET', 'POST'])
+@requires_auth
 def import_book():
     if request.method == 'POST':
         if not request.form['isbn']:
@@ -97,6 +119,7 @@ def import_book():
     return render_template('import.html')
 
 @app.route('/manage/edit/<int:id>', methods=['GET', 'POST'])
+@requires_auth
 def edit(id):
     if request.method == 'POST':
         if not request.form['isbn']:
@@ -108,6 +131,7 @@ def edit(id):
     return render_template('edit.html', book=book)
 
 @app.route('/manage/del/<int:id>', methods=['GET', 'POST'])
+@requires_auth
 def delete(id):
     book_handle = BookHandle()
     book_handle.delete(id)
