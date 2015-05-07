@@ -1,3 +1,4 @@
 env
-book.db
+__pycache__
+*.db
 library.cfg.user
