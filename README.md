@@ -1,13 +1,10 @@
 # LUG Library
 
+## Dependence
+
+`flask`, `flask_sqlalchemy`, `requests`, `sqlite3`
+
 ## Deploy
-
-Create Database
-
-```python
-from library import db
-db.create_all()
-```
 
 Run
 
