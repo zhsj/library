@@ -6,6 +6,7 @@ import json
 
 app = Flask(__name__)
 app.config.from_pyfile("library.cfg")
+app.config.from_pyfile("library.cfg.user", silent=True)
 db = SQLAlchemy(app)
 
 class Book(db.Model):
