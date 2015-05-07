@@ -19,4 +19,6 @@ EXPOSE 8000
 
 RUN python3 -c "from library.library import db; db.create_all()"
 
+VOLUME ["/library/database"]
+
 CMD ["gunicorn", "-b 0.0.0.0:8000", "library.library:app"]
